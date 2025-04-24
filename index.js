@@ -13,7 +13,7 @@ app.use(express.json());
 // Endpoint principal para Alexa
 app.post('/', (req, res) => {
   const body = req.body;
-
+ console.log('Alexa dice:', JSON.stringify(req.body, null, 2));
   if (body.request?.type === 'IntentRequest' &&
       body.request.intent?.name === 'PedirTortillasIntent') {
 
