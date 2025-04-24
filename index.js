@@ -46,6 +46,14 @@ app.post('/config', (req, res) => {
   res.json({ mensaje: `Nueva configuración: ${valor} tortillas por quetzal` });
 });
 
+// Ruta de depuración para ver los pedidos actuales
+app.get('/debug', (req, res) => {
+  res.json(pedidos);
+});
+
+app.listen(port, () => {
+  console.log(`Servidor corriendo en http://localhost:${port}`);
+});
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });
