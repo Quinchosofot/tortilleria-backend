@@ -17,6 +17,7 @@ app.get('/pedidos', (req, res) => {
 
 // Alexa envía un pedido
 app.post('/pedido', (req, res) => {
+ console.log('Datos recibidos desde Alexa:', req.body);
   const { nombre, quetzales } = req.body;
 
   if (!nombre || !quetzales) {
