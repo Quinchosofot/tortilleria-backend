@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 // ✅ Endpoint principal para Alexa
- app.post('/', (req, res) => {
+app.post('/', (req, res) => {
   const body = req.body;
   console.log('📥 Alexa request recibida:', JSON.stringify(body, null, 2));
 
@@ -87,19 +87,6 @@ app.use(express.json());
   });
 });
 
-
-  // 🔁 Cualquier otro tipo de intent no reconocido
-  res.json({
-    version: "1.0",
-    response: {
-      outputSpeech: {
-        type: "PlainText",
-        text: "No entendí tu pedido, por favor repetilo."
-      },
-      shouldEndSession: true
-    }
-  });
-});
 
 // Ver todos los pedidos
 app.get('/pedidos', (req, res) => {
