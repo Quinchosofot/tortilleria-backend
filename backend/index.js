@@ -10,25 +10,27 @@ let tortillasPorQuetzal = 4;
 app.use(cors());
 app.use(express.json());
 
-// Endpoint principal para Alexa
+// ✅ Endpoint principal para Alexa
 app.post('/', (req, res) => {
   const body = req.body;
- console.log('Alexa dice:', JSON.stringify(req.body, null, 2));
+  console.log('📥 Alexa request recibida:', JSON.stringify(body, null, 2));
+
   if (body.request?.type === 'IntentRequest' &&
       body.request.intent?.name === 'PedirTortillasIntent') {
 
     const nombre = body.request.intent.slots.nombre?.value;
-    const quetzales = parseInt(body.request.intent.slots.monto?.value);
+    const quetzales = parseInt(body.request.intent.slots.quetzales?.value); // 🔧 cambiado de monto → quetzales
 
     if (!nombre || isNaN(quetzales)) {
+      console.log('⚠️ Slots incompletos:', { nombre, quetzales });
       return res.json({
         version: "1.0",
         response: {
           outputSpeech: {
             type: "PlainText",
-            text: "Faltan datos. Por favor, decime tu nombre y cuántos quetzales quieres gastar."
+            text: "Faltan datos. Por favor, decime tu nombre y cuántos quetzales querés gastar."
           },
-          shouldEndSession: true
+          shouldEndSession: false
         }
       });
     }
@@ -45,6 +47,7 @@ app.post('/', (req, res) => {
     };
 
     pedidos.push(nuevoPedido);
+    console.log('✅ Pedido guardado desde Alexa:', nuevoPedido);
 
     return res.json({
       version: "1.0",
@@ -58,13 +61,13 @@ app.post('/', (req, res) => {
     });
   }
 
-  // Para cualquier otro tipo de request no reconocido
+  // 🔁 Cualquier otro tipo de intent no reconocido
   res.json({
     version: "1.0",
     response: {
       outputSpeech: {
         type: "PlainText",
-        text: "No entendí tu pedido, por favor repítelo."
+        text: "No entendí tu pedido, por favor repetilo."
       },
       shouldEndSession: true
     }
@@ -113,5 +116,5 @@ app.post('/config', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
+  console.log(`🚀 Servidor corriendo en http://localhost:${port}`);
 });
