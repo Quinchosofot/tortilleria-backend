@@ -281,7 +281,7 @@
             mostrarPedidos();
         }
 
-       async function cargarPedidosDesdeBackend() {
+    async function cargarPedidosDesdeBackend() {
     try {
         const response = await fetch('https://tortilleria-backend.onrender.com/pedidos');
         pedidos = await response.json();
@@ -292,7 +292,8 @@
 }
 
 // Cargar cada 5 segundos
-cargarPedidosDesdeBackend();illa, tiempoPorTortilla * 1000);
+cargarPedidosDesdeBackend();
+setInterval(cargarPedidosDesdeBackend, 5000);
 
         const videoList = [
             
