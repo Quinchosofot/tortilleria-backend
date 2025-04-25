@@ -11,15 +11,28 @@ app.use(cors());
 app.use(express.json());
 
 // ✅ Endpoint principal para Alexa
-app.post('/', (req, res) => {
+ app.post('/', (req, res) => {
   const body = req.body;
   console.log('📥 Alexa request recibida:', JSON.stringify(body, null, 2));
 
+  if (body.request?.type === 'LaunchRequest') {
+    // Si solo abren la skill sin pedir algo específico
+    return res.json({
+      version: "1.0",
+      response: {
+        outputSpeech: {
+          type: "PlainText",
+          text: "¡Bienvenido a la tortillería digital! ¿Cuántos quetzales deseas gastar en tortillas y para quién?"
+        },
+        shouldEndSession: false // No cerramos la sesión todavía
+      }
+    });
+  }
+
   if (body.request?.type === 'IntentRequest' &&
       body.request.intent?.name === 'PedirTortillasIntent') {
-
     const nombre = body.request.intent.slots.nombre?.value;
-    const quetzales = parseInt(body.request.intent.slots.quetzales?.value); // 🔧 cambiado de monto → quetzales
+    const quetzales = parseInt(body.request.intent.slots.quetzales?.value);
 
     if (!nombre || isNaN(quetzales)) {
       console.log('⚠️ Slots incompletos:', { nombre, quetzales });
@@ -60,6 +73,20 @@ app.post('/', (req, res) => {
       }
     });
   }
+
+  // Fallback para cualquier otro tipo
+  res.json({
+    version: "1.0",
+    response: {
+      outputSpeech: {
+        type: "PlainText",
+        text: "No entendí tu pedido, por favor repetilo."
+      },
+      shouldEndSession: true
+    }
+  });
+});
+
 
   // 🔁 Cualquier otro tipo de intent no reconocido
   res.json({
