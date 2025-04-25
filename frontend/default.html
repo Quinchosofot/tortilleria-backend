@@ -14,21 +14,19 @@
         }
 
         .cola {
-            width: 50%;
-            padding: 20px;
-            box-sizing: border-box;
-            border-right: 3px solid #333;
-            display: flex;
-            flex-direction: column;
-        }
-
-        table thead th {
-            position: sticky;
-            top: 0;
-            background-color: #333;
-            z-index: 2;
-        }
-
+    width: 50%;
+    padding: 20px;
+    box-sizing: border-box;
+    border-right: 3px solid #333;
+    display: flex;
+    flex-direction: column;
+}
+            table thead th {
+                position: sticky;
+                    top: 0;
+                    background-color: #333; /* mismo fondo que el original */
+                    z-index: 2;
+            }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -91,27 +89,52 @@
 
     <!-- Cola de pedidos -->
     <div class="cola" style="margin-top: 150px;">
-        <div id="tiempoEspera" style="font-size: 1.2em; margin-bottom: 15px;">
-            Tiempo estimado de espera: <strong>0 minutos</strong>
-        </div>
         <div id="scrollWrapper" class="scroll-content">
-            <table id="tablaPedidos">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Nombre</th>
-                        <th>Cantidad</th>
-                        <th>Total</th>
-                        <th>Estado</th>
-                        <th>Restante</th>
-                        <th>Entrega</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+        <table id="tablaPedidos">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Cantidad</th>
+                    <th>Estado</th>
+                    <th>Restante</th>
+                    <th>Tiempo en cola</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
+</div>
+   
 
+<style>
+  #pedido-container {
+    width: 400px;
+    height: 200px;
+    overflow: hidden;
+    border: 2px solid #333;
+  }
+
+  #lista-pedidos {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    animation: scrollPedidos 10s linear infinite;
+  }
+
+  #lista-pedidos li {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+
+  @keyframes scrollPedidos {
+    0%   { transform: translateY(0); }
+    100% { transform: translateY(-100%); }
+  }
+</style>
+
+
+    <!-- Video promocional -->
     <div class="promo">
         <video id="videoPromo" autoplay muted></video>
     </div>
@@ -131,17 +154,21 @@
         .scroll-content {
             overflow-y: auto;
             flex-grow: 1;
-            max-height: calc(100vh - 190px);
+            max-height: calc(100vh - 190px); /* ajustá según tu encabezado */
         }
     </style>
 
     <script>
+
+
+
+
         const slogans = [
             "Calientitas, como deben ser",
             "Tradición que avanza",
             "Tecnología que sabe a casa",
             "Tus tortillas, en su punto y a tiempo",
-            "Donde la tradición se encuentra con lo digital",
+          
             "Ordena. Espera. ¡Disfruta!",
             "Tortillas con precisión digital",
             "Más que masa, es evolución",
@@ -154,6 +181,7 @@
 
         function mostrarSlogan() {
             sloganElement.style.opacity = 0;
+
             setTimeout(() => {
                 sloganElement.textContent = slogans[sloganIndex];
                 sloganElement.style.opacity = 1;
@@ -177,6 +205,7 @@
             for (let i = 1; i <= 20; i++) {
                 let cantidad = Math.floor(Math.random() * 21) + 20;
                 let nombre = nombresEjemplo[Math.floor(Math.random() * nombresEjemplo.length)];
+
                 pedidos.push({
                     id: i,
                     nombre: nombre,
@@ -216,48 +245,35 @@
                     ? pedido.entregaEstimada.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                     : "-";
 
-                const row = `
-                    <tr id="pedido-${pedido.id}" class="${pedido.estado === 'Listo para entrega' ? 'listo' : ''}">
-                        <td>${pedido.id}</td>
-                        <td>${pedido.nombre}</td>
-                        <td>${pedido.cantidad}</td>
-                        <td>Q ${(pedido.cantidad / 4).toFixed(2)}</td>
-                        <td>${pedido.estado}</td>
-                        <td>${pedido.restante}</td>
-                        <td>${entregaStr}</td>
-                    </tr>
-                `;
+                    const row = `
+                        <tr id="pedido-${pedido.id}" class="${pedido.estado === 'Listo para entrega' ? 'listo' : ''}">
+                            <td>${pedido.id}</td>
+                            <td>${pedido.nombre}</td>
+                            <td>${pedido.cantidad}</td>
+                            <td>${pedido.estado}</td>
+                            <td>${pedido.restante}</td>
+                            <td>${entregaStr}</td>
+                        </tr>
+                    `;
+
                 tbody.innerHTML += row;
             });
-
             scrollAProximoListo();
-            actualizarTiempoEspera();
         }
 
         function scrollAProximoListo() {
-            const indexListo = pedidos.findIndex(p => p.estado === "Listo para entrega");
-            if (indexListo === -1) return;
+                    const indexListo = pedidos.findIndex(p => p.estado === "Listo para entrega");
+                    if (indexListo === -1) return;
 
-            const scrollIndex = Math.max(indexListo - 5, 0);
-            const pedido = pedidos[scrollIndex];
-            const rowElement = document.getElementById(`pedido-${pedido.id}`);
-            if (rowElement) {
-                rowElement.scrollIntoView({ behavior: "smooth", block: "start" });
-            }
-        }
+                    // Mostrar 5 pedidos antes si existen
+                    const scrollIndex = Math.max(indexListo - 5, 0);
+                    const pedido = pedidos[scrollIndex];
 
-        function actualizarTiempoEspera() {
-            let totalRestante = 0;
-            pedidos.forEach(p => {
-                if (p.estado !== "Listo para entrega") {
-                    totalRestante += p.restante;
+                    const rowElement = document.getElementById(`pedido-${pedido.id}`);
+                    if (rowElement) {
+                        rowElement.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }
                 }
-            });
-
-            const minutos = Math.ceil(totalRestante / 15); // 15 tortillas por minuto
-            const tiempoElem = document.getElementById("tiempoEspera");
-            tiempoElem.innerHTML = `Tiempo estimado de espera: <strong>${minutos} minuto${minutos !== 1 ? "s" : ""}</strong>`;
-        }
 
         function producirTortilla() {
             tortillasHechas += 1;
@@ -265,21 +281,24 @@
             mostrarPedidos();
         }
 
-        async function cargarPedidosDesdeBackend() {
-            try {
-                const response = await fetch('https://tortilleria-backend.onrender.com/pedidos');
-                pedidos = await response.json();
-                mostrarPedidos();
-            } catch (error) {
-                console.error("Error cargando pedidos:", error);
-            }
-        }
+    async function cargarPedidosDesdeBackend() {
+    try {
+        const response = await fetch('https://tortilleria-backend.onrender.com/pedidos');
+        pedidos = await response.json();
+        mostrarPedidos();
+    } catch (error) {
+        console.error("Error cargando pedidos:", error);
+    }
+}
 
-        cargarPedidosDesdeBackend();
-      //  setInterval(cargarPedidosDesdeBackend, 5000);
-        setInterval(producirTortilla, 4000);
+cargarPedidosDesdeBackend();
+setInterval(cargarPedidosDesdeBackend, 5000);
 
-        const videoList = ["video-tortillas.mp4"];
+        const videoList = [
+            
+            "video-tortillas.mp4"
+        ];
+
         let currentVideo = 0;
         const videoElement = document.getElementById("videoPromo");
 
