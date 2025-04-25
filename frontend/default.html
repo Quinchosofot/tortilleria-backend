@@ -96,10 +96,10 @@
                     <th>#</th>
                     <th>Nombre</th>
                     <th>Cantidad</th>
+                    <th>Total</th>
                     <th>Estado</th>
                     <th>Restante</th>
-                    <th>Tiempo en cola</th>
-                </tr>
+                                </tr>
             </thead>
             <tbody></tbody>
         </table>
@@ -250,6 +250,7 @@
                             <td>${pedido.id}</td>
                             <td>${pedido.nombre}</td>
                             <td>${pedido.cantidad}</td>
+                              <td>${(pedido.cantidad / 4).toFixed(2)}</td>
                             <td>${pedido.estado}</td>
                             <td>${pedido.restante}</td>
                             <td>${entregaStr}</td>
