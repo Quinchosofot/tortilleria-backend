@@ -168,10 +168,14 @@ async function crearPedido() {
 
         const nuevoPedido = await response.json();
         pedidos.push(nuevoPedido);
+
         quetzalesInput.value = '';
-		quetzalesInput.focus(); // <-- Esto es lo nuevo
+        quetzalesInput.focus();
         mostrarPedidos();
-		imprimirTicket(nuevoPedido);
+
+        // 👇 SOLO si se creó correctamente, imprimimos
+        imprimirTicket(nuevoPedido);
+
     } catch (error) {
         console.error('Error conectando al servidor:', error);
         alert('Error de conexión con el backend.');
