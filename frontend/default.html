@@ -219,10 +219,6 @@ function mostrarPedidos() {
     tbody.innerHTML = "";
 
     pedidos.forEach(pedido => {
-        const entregaStr = pedido.entregaEstimada
-            ? pedido.entregaEstimada.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            : "-";
-
         const botonEntregar = pedido.estado === 'Listo para entrega'
             ? `<button onclick="entregarPedido(${pedido.id})">Entregar</button>`
             : '';
@@ -233,8 +229,8 @@ function mostrarPedidos() {
                 <td>${pedido.orden}</td>
                 <td>Q${pedido.quetzales}</td>
                 <td>${pedido.tortillas}</td>
+                <td>${pedido.restantes}</td>
                 <td>${pedido.estado}</td>
-                <td>${entregaStr}</td>
                 <td>${botonEntregar}</td>
             </tr>
         `;
