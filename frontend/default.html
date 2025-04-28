@@ -41,11 +41,11 @@
                     <tr>
                         <th>#</th>
                         <th>Orden</th>
-                        <th>Q</th>
+                        <th>Total</th>
                         <th>Tortillas</th>
                         <th>Estado</th>
                         <th>Restante</th>
-                        <th>Tiempo en cola</th>
+                       
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -59,8 +59,19 @@
     </div>
 
     <script>
-        const slogans = [..."Calientitas, como deben ser", "Tradición que avanza", "Tecnología que sabe a casa", "Tus tortillas, en su punto y a tiempo", "Donde la tradición se encuentra con lo digital", "Ordena. Espera. ¡Disfruta!", "Tortillas con precisión digital", "Más que masa, es evolución", "¡Listo para servir, listo para ti!", "Lo bueno se cocina en tiempo real"];
-        let sloganIndex = 0;
+       const slogans = [
+  "Calientitas, como deben ser",
+  "Tradición que avanza",
+  "Tecnología que sabe a casa",
+  "Tus tortillas, en su punto y a tiempo",
+  "Donde la tradición se encuentra con lo digital",
+  "Ordena. Espera. ¡Disfruta!",
+  "Tortillas con precisión digital",
+  "Más que masa, es evolución",
+  "¡Listo para servir, listo para ti!",
+  "Lo bueno se cocina en tiempo real"
+];
+ let sloganIndex = 0;
         const sloganElement = document.getElementById("slogan");
 
         function mostrarSlogan() {
@@ -157,7 +168,7 @@ async function crearPedido() {
                         <td>${pedido.tortillas}</td>
                         <td>${pedido.estado}</td>
                         <td>${pedido.restante}</td>
-                        <td>${entregaStr}</td>
+                      
                     </tr>
                 `;
 
