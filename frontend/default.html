@@ -92,6 +92,48 @@
         let tortillasHechas = 0;
         let contadorPedidos = 1;
 
+function imprimirTicket(pedido) {
+    const fechaHora = new Date();
+    const fechaStr = fechaHora.toLocaleDateString();
+    const horaStr = fechaHora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    // Crear ventana nueva para imprimir
+    const ventana = window.open('', 'Ticket', 'width=300,height=600');
+
+    // Definir contenido del ticket
+    ventana.document.write(`
+        <html>
+        <head>
+            <title>Ticket de Pedido</title>
+            <style>
+                body { font-family: monospace; text-align: center; }
+                .ticket {
+                    width: 250px;
+                    margin: auto;
+                }
+                .ticket h2 { margin: 10px 0; }
+                .ticket p { margin: 5px 0; font-size: 14px; }
+                hr { border: 1px dashed #000; margin: 10px 0; }
+            </style>
+        </head>
+        <body onload="window.print(); window.close();">
+            <div class="ticket">
+                <h2>El Comal Digital</h2>
+                <p>${fechaStr} ${horaStr}</p>
+                <hr>
+                <p><strong>${pedido.orden}</strong></p>
+                <p><strong>Q${pedido.quetzales}.00</strong></p>
+                <p>${pedido.tortillas} tortillas</p>
+                <hr>
+                <p>¡Gracias por su compra!</p>
+            </div>
+        </body>
+        </html>
+    `);
+
+    ventana.document.close();
+}
+
 async function crearPedido() {
     const quetzalesInput = document.getElementById('inputQuetzales');
     const quetzales = parseInt(quetzalesInput.value);
@@ -121,6 +163,7 @@ async function crearPedido() {
         quetzalesInput.value = '';
 		quetzalesInput.focus(); // <-- Esto es lo nuevo
         mostrarPedidos();
+		imprimirTicket();
     } catch (error) {
         console.error('Error conectando al servidor:', error);
         alert('Error de conexión con el backend.');
