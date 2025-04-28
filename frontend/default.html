@@ -250,7 +250,7 @@ function entregarPedido(id) {
     }
 
     // Mandar al backend
-    fetch(`/entregarPedido/${id}`, {
+    fetch(`https://tortilleria-backend.onrender.com/entregarPedido/${id}`, {
         method: 'POST' // o PUT dependiendo cómo tengas el backend
     })
     .then(response => {
