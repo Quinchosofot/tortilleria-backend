@@ -12,6 +12,14 @@ const tortillasPorQuetzal = 4; // 4 tortillas por cada Q1
 app.use(cors());
 app.use(express.json());
 
+
+app.post('/entregarPedido/:id', (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    // Aquí actualizas tu base de datos o memoria
+    // Luego respondes:
+    res.json({ success: true });
+});
+
 // Endpoint para listar pedidos
 app.get('/pedidos', (req, res) => {
   res.json(pedidos);
