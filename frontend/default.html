@@ -81,32 +81,40 @@
         let tortillasHechas = 0;
         let contadorPedidos = 1;
 
-        function crearPedido() {
-            const quetzalesInput = document.getElementById('inputQuetzales');
-            const quetzales = parseInt(quetzalesInput.value);
+async function crearPedido() {
+    const quetzalesInput = document.getElementById('inputQuetzales');
+    const quetzales = parseInt(quetzalesInput.value);
 
-            if (!quetzales || quetzales <= 0) {
-                alert('Por favor ingresa una cantidad válida.');
-                return;
-            }
+    if (!quetzales || quetzales <= 0) {
+        alert('Por favor ingresa una cantidad válida.');
+        return;
+    }
 
-            const nuevoPedido = {
-                id: pedidos.length + 1,
-                orden: `Orden ${contadorPedidos.toString().padStart(3, '0')}`,
-                quetzales: quetzales,
-                tortillas: quetzales * tortillasPorQuetzal,
-                restante: quetzales * tortillasPorQuetzal,
-                estado: "En cola",
-                horaIngreso: new Date(),
-                entregaEstimada: null
-            };
+    try {
+        const response = await fetch('http://localhost:3000/pedidos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ cantidad: quetzales })
+        });
 
-            pedidos.push(nuevoPedido);
-            contadorPedidos++;
-
-            quetzalesInput.value = '';
-            mostrarPedidos();
+        if (!response.ok) {
+            const error = await response.json();
+            alert('Error creando pedido: ' + (error.error || 'Desconocido'));
+            return;
         }
+
+        const nuevoPedido = await response.json();
+        pedidos.push(nuevoPedido);
+        quetzalesInput.value = '';
+		quetzalesInput.focus(); // <-- Esto es lo nuevo
+        mostrarPedidos();
+    } catch (error) {
+        console.error('Error conectando al servidor:', error);
+        alert('Error de conexión con el backend.');
+    }
+}
 
         document.getElementById('inputQuetzales').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
@@ -191,6 +199,10 @@
 
         videoElement.addEventListener("ended", playNextVideo);
         playNextVideo();
+		// Poner foco inicial al cargar la página
+window.onload = () => {
+    document.getElementById('inputQuetzales').focus();
+};
     </script>
 </body>
 </html>
