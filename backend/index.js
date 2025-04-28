@@ -27,7 +27,7 @@ app.post('/pedidos', (req, res) => {
 
   const nuevoPedido = {
     id: pedidos.length + 1,
-    orden: `Orden ${String(contadorPedidos).padStart(3, '0')}`,
+    orden: `${String(contadorPedidos).padStart(3, '0')}`,
     quetzales: cantidad,
     tortillas: cantidad * tortillasPorQuetzal,
     restante: cantidad * tortillasPorQuetzal,
