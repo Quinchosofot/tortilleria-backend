@@ -155,7 +155,7 @@ async function crearPedido() {
 
         quetzalesInput.value = '';
         quetzalesInput.focus();
-        mostrarPedidos();
+       cargarPedidosDesdeBackend()
 
         // 👇 SOLO si se creó correctamente, imprimimos
         imprimirTicket(nuevoPedido);
@@ -189,6 +189,30 @@ async function crearPedido() {
                 }
             });
         }
+
+function cargarPedidosDesdeBackend() {
+    fetch('https://tortilleria-backend.onrender.com/pedidos') // tu URL real aquí
+        .then(response => response.json())
+        .then(data => {
+            pedidos = data; // Actualizas el arreglo global
+
+            // Si tienes campos de fecha
+            pedidos.forEach(p => {
+                if (p.entregaEstimada) {
+                    p.entregaEstimada = new Date(p.entregaEstimada);
+                }
+            });
+
+            mostrarPedidos();
+        })
+        .catch(error => {
+            console.error('Error cargando pedidos del backend:', error);
+        });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    cargarPedidosDesdeBackend();
+});
 
         function mostrarPedidos() {
             const tbody = document.querySelector("#tablaPedidos tbody");
