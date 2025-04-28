@@ -243,6 +243,36 @@ window.addEventListener('DOMContentLoaded', () => {
     scrollAProximoListo();
 }
 
+function entregarPedido(id) {
+    // Opcionalmente podrías pedir confirmación:
+    if (!confirm('¿Confirmar entrega del pedido ' + id + '?')) {
+        return;
+    }
+
+    // Mandar al backend
+    fetch(`/entregarPedido/${id}`, {
+        method: 'POST' // o PUT dependiendo cómo tengas el backend
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error entregando pedido');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Eliminamos el pedido del arreglo
+        pedidos = pedidos.filter(p => p.id !== id);
+
+        // Refrescamos la tabla
+        mostrarPedidos();
+    })
+    .catch(error => {
+        console.error('Error al entregar pedido:', error);
+        alert('Hubo un problema al entregar el pedido.');
+    });
+}
+
+
         function scrollAProximoListo() {
             const indexListo = pedidos.findIndex(p => p.estado === "Listo para entrega");
             if (indexListo === -1) return;
