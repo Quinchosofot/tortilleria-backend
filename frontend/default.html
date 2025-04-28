@@ -4,104 +4,85 @@
     <meta charset="UTF-8">
     <title>El Comal Digital</title>
     <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #1e1e1e;
-            color: #d4d4d4;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-
-        h1 {
-            margin-bottom: 20px;
-        }
-
-        .pedido-form {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        input[type="number"] {
-            padding: 10px;
-            font-size: 1rem;
-            width: 150px;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 1rem;
-            cursor: pointer;
-        }
-
-        table {
-            width: 80%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table, th, td {
-            border: 1px solid #444;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: center;
-        }
-
-        thead {
-            background-color: #333;
-        }
+        /* Tus estilos originales */
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: #1e1e1e; color: #d4d4d4; display: flex; height: 100vh; }
+        .cola { width: 50%; padding: 20px; box-sizing: border-box; border-right: 3px solid #333; display: flex; flex-direction: column; }
+        table thead th { position: sticky; top: 0; background-color: #333; z-index: 2; }
+        table { width: 100%; border-collapse: collapse; font-size: 1.2em; }
+        th, td { padding: 10px; border: 1px solid #444; text-align: center; }
+        th { background-color: #333; color: #fdd835; }
+        tr:nth-child(even) { background-color: #2b2b2b; }
+        .listo { background-color: #2e7d32; color: white; box-shadow: 0 0 10px 2px rgba(46, 125, 50, 0.8); }
+        .promo { width: 50%; background-color: black; display: flex; align-items: center; justify-content: center; }
+        video { max-width: 100%; max-height: 100%; }
+        .slogan { margin-top: 5px; font-size: 1.1em; color: #ffa726; opacity: 0; transition: opacity 1s ease-in-out; }
     </style>
 </head>
 <body>
 
-    <h1>El Comal Digital</h1>
-
-    <div class="pedido-form">
-        <input type="number" id="quetzales" placeholder="Cantidad en Q" min="1" />
-        <button onclick="crearPedido()">Crear Pedido</button>
+    <div style="position: absolute; top: 0; left: 0; width: 100%; background-color: #2c2c2c; padding: 10px 0; border-bottom: 2px solid #444; height: 150px;">
+        <img src="comal-digital-logo.png" alt="Tu tortilleria Favorita" style="height: 100px; margin-left: 20px; float: left;">
+        <div style="text-align: center; margin-top: 10px;">
+            <h1 style="margin: 0; color: #fdd835; font-size: 2em;">Tu tortilleria favorita</h1>
+            <p id="slogan" class="slogan">Cargando slogan...</p>
+        </div>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Orden</th>
-                <th>Quetzales</th>
-                <th>Tortillas</th>
-            </tr>
-        </thead>
-        <tbody id="tabla-pedidos">
-            <!-- Se llenará dinámicamente -->
-        </tbody>
-    </table>
+    <!-- Seccion para ingresar pedido -->
+    <div class="cola" style="margin-top: 150px;">
+        <div style="margin-bottom: 20px;">
+            <input type="number" id="inputQuetzales" placeholder="Cantidad en Q" style="padding:10px; font-size:1rem; width: 150px;">
+            <button onclick="crearPedido()" style="padding:10px 20px; font-size:1rem; cursor:pointer;">Crear Pedido</button>
+        </div>
+
+        <div id="scrollWrapper" class="scroll-content">
+            <table id="tablaPedidos">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Orden</th>
+                        <th>Q</th>
+                        <th>Tortillas</th>
+                        <th>Estado</th>
+                        <th>Restante</th>
+                        <th>Tiempo en cola</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Video promocional -->
+    <div class="promo">
+        <video id="videoPromo" autoplay muted></video>
+    </div>
 
     <script>
-        async function cargarPedidos() {
-            const respuesta = await fetch('http://localhost:3000/pedidos');
-            const pedidos = await respuesta.json();
+        const slogans = [..."Calientitas, como deben ser", "Tradición que avanza", "Tecnología que sabe a casa", "Tus tortillas, en su punto y a tiempo", "Donde la tradición se encuentra con lo digital", "Ordena. Espera. ¡Disfruta!", "Tortillas con precisión digital", "Más que masa, es evolución", "¡Listo para servir, listo para ti!", "Lo bueno se cocina en tiempo real"];
+        let sloganIndex = 0;
+        const sloganElement = document.getElementById("slogan");
 
-            const tbody = document.getElementById('tabla-pedidos');
-            tbody.innerHTML = '';
-
-            pedidos.forEach(pedido => {
-                const fila = document.createElement('tr');
-                fila.innerHTML = `
-                    <td>${pedido.idCola}</td>
-                    <td>${pedido.numeroOrden}</td>
-                    <td>Q${pedido.cantidadQuetzales}</td>
-                    <td>${pedido.totalTortillas}</td>
-                `;
-                tbody.appendChild(fila);
-            });
+        function mostrarSlogan() {
+            sloganElement.style.opacity = 0;
+            setTimeout(() => {
+                sloganElement.textContent = slogans[sloganIndex];
+                sloganElement.style.opacity = 1;
+                sloganIndex = (sloganIndex + 1) % slogans.length;
+            }, 1000);
         }
 
-        async function crearPedido() {
-            const quetzalesInput = document.getElementById('quetzales');
+        mostrarSlogan();
+        setInterval(mostrarSlogan, 4000);
+
+        const tiempoPorTortilla = 4; // segundos
+        const tortillasPorQuetzal = 4;
+        let pedidos = [];
+        let tortillasHechas = 0;
+        let contadorPedidos = 1;
+
+        function crearPedido() {
+            const quetzalesInput = document.getElementById('inputQuetzales');
             const quetzales = parseInt(quetzalesInput.value);
 
             if (!quetzales || quetzales <= 0) {
@@ -109,27 +90,107 @@
                 return;
             }
 
-            await fetch('http://localhost:3000/crearPedido', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ quetzales })
-            });
+            const nuevoPedido = {
+                id: pedidos.length + 1,
+                orden: `Orden ${contadorPedidos.toString().padStart(3, '0')}`,
+                quetzales: quetzales,
+                tortillas: quetzales * tortillasPorQuetzal,
+                restante: quetzales * tortillasPorQuetzal,
+                estado: "En cola",
+                horaIngreso: new Date(),
+                entregaEstimada: null
+            };
+
+            pedidos.push(nuevoPedido);
+            contadorPedidos++;
 
             quetzalesInput.value = '';
-            cargarPedidos();
+            mostrarPedidos();
         }
 
-        // Permitir crear pedido con Enter
-        document.getElementById('quetzales').addEventListener('keydown', (e) => {
+        document.getElementById('inputQuetzales').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 crearPedido();
             }
         });
 
-        // Inicial
-        cargarPedidos();
-        setInterval(cargarPedidos, 5000); // Refrescar cada 5 segundos
-    </script>
+        function actualizarEntregas() {
+            let disponibles = tortillasHechas;
+            pedidos.forEach(pedido => {
+                if (pedido.estado === "Listo para entrega") return;
 
+                if (pedido.restante <= disponibles) {
+                    disponibles -= pedido.restante;
+                    pedido.restante = 0;
+                    pedido.estado = "Listo para entrega";
+                    pedido.entregaEstimada = new Date();
+                } else if (pedido.restante > 0 && disponibles > 0) {
+                    pedido.restante -= disponibles;
+                    disponibles = 0;
+                    pedido.estado = "En producción";
+                }
+            });
+        }
+
+        function mostrarPedidos() {
+            const tbody = document.querySelector("#tablaPedidos tbody");
+            tbody.innerHTML = "";
+
+            pedidos.forEach(pedido => {
+                const entregaStr = pedido.entregaEstimada
+                    ? pedido.entregaEstimada.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    : "-";
+
+                const row = `
+                    <tr id="pedido-${pedido.id}" class="${pedido.estado === 'Listo para entrega' ? 'listo' : ''}">
+                        <td>${pedido.id}</td>
+                        <td>${pedido.orden}</td>
+                        <td>Q${pedido.quetzales}</td>
+                        <td>${pedido.tortillas}</td>
+                        <td>${pedido.estado}</td>
+                        <td>${pedido.restante}</td>
+                        <td>${entregaStr}</td>
+                    </tr>
+                `;
+
+                tbody.innerHTML += row;
+            });
+
+            scrollAProximoListo();
+        }
+
+        function scrollAProximoListo() {
+            const indexListo = pedidos.findIndex(p => p.estado === "Listo para entrega");
+            if (indexListo === -1) return;
+
+            const scrollIndex = Math.max(indexListo - 5, 0);
+            const pedido = pedidos[scrollIndex];
+            const rowElement = document.getElementById(`pedido-${pedido.id}`);
+            if (rowElement) {
+                rowElement.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        }
+
+        function producirTortilla() {
+            tortillasHechas += 1;
+            actualizarEntregas();
+            mostrarPedidos();
+        }
+
+        setInterval(producirTortilla, tiempoPorTortilla * 1000);
+
+        const videoList = ["video-tortillas.mp4"];
+        let currentVideo = 0;
+        const videoElement = document.getElementById("videoPromo");
+
+        function playNextVideo() {
+            videoElement.src = videoList[currentVideo];
+            videoElement.play();
+            currentVideo = (currentVideo + 1) % videoList.length;
+        }
+
+        videoElement.addEventListener("ended", playNextVideo);
+        playNextVideo();
+    </script>
 </body>
 </html>
