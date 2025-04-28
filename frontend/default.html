@@ -97,10 +97,17 @@ function imprimirTicket(pedido) {
     const fechaStr = fechaHora.toLocaleDateString();
     const horaStr = fechaHora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+    // Mensajes posibles
+    const mensajes = [
+        "¡Vuelva pronto!",
+        "Orden lista en 5 minutos"
+    ];
+    // Elegir uno al azar
+    const mensajeFinal = mensajes[Math.floor(Math.random() * mensajes.length)];
+
     // Crear ventana nueva para imprimir
     const ventana = window.open('', 'Ticket', 'width=300,height=600');
 
-    // Definir contenido del ticket
     ventana.document.write(`
         <html>
         <head>
@@ -125,6 +132,7 @@ function imprimirTicket(pedido) {
                 <p><strong>Q${pedido.quetzales}.00</strong></p>
                 <p>${pedido.tortillas} tortillas</p>
                 <hr>
+                <p>${mensajeFinal}</p>
                 <p>¡Gracias por su compra!</p>
             </div>
         </body>
@@ -163,7 +171,7 @@ async function crearPedido() {
         quetzalesInput.value = '';
 		quetzalesInput.focus(); // <-- Esto es lo nuevo
         mostrarPedidos();
-		imprimirTicket();
+		imprimirTicket(nuevoPedido);
     } catch (error) {
         console.error('Error conectando al servidor:', error);
         alert('Error de conexión con el backend.');
