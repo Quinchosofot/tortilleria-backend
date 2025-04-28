@@ -95,7 +95,7 @@
 
 function imprimirTicket(respuestaBackend) {
     // Asegurarnos que los valores vienen bien
-    const pedidoNumero = respuestaBackend.pedidoNumero ?? "N/A";
+    const pedidoNumero = respuestaBackend.orden ?? "N/A";
     const tiempoColaSegundos = Number(respuestaBackend.tiempoColaSegundos ?? 0);
     const tiempoProduccionSegundos = Number(respuestaBackend.tiempoProduccionSegundos ?? 0);
 
