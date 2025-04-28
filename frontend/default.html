@@ -92,54 +92,37 @@
         let tortillasHechas = 0;
         let contadorPedidos = 1;
 
-function imprimirTicket(pedido) {
-    const fechaHora = new Date();
-    const fechaStr = fechaHora.toLocaleDateString();
-    const horaStr = fechaHora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+function imprimirTicket(pedidoNumero, tiempoColaSegundos, tiempoProduccionSegundos) {
+    // Calcula el tiempo estimado total
+    const tiempoTotalSegundos = tiempoColaSegundos + tiempoProduccionSegundos;
+    const minutos = Math.floor(tiempoTotalSegundos / 60);
+    const segundos = tiempoTotalSegundos % 60;
 
-    // Mensajes posibles
-    const mensajes = [
-        "¡Vuelva pronto!",
-        "Orden lista en 5 minutos"
-    ];
-    // Elegir uno al azar
-    const mensajeFinal = mensajes[Math.floor(Math.random() * mensajes.length)];
+    // Formatea fecha y hora
+    const ahora = new Date();
+    const fecha = ahora.toLocaleDateString('es-ES');
+    const hora = ahora.toLocaleTimeString('es-ES');
 
-    // Crear ventana nueva para imprimir
-    const ventana = window.open('', 'Ticket', 'width=300,height=600');
+    // Construir el contenido del ticket
+    let ticket = '';
+    ticket += 'El Comal Digital\n';
+    ticket += '-----------------------------\n';
+    ticket += `Pedido No: ${pedidoNumero}\n`;
+    ticket += `Fecha: ${fecha}\n`;
+    ticket += `Hora: ${hora}\n`;
+    ticket += `Tiempo estimado de espera:\n${minutos} min ${segundos} seg\n`;
+    ticket += '-----------------------------\n';
+    ticket += '¡Gracias por su compra!\n';
+    ticket += 'Vuelva pronto\n';
+    ticket += '\n\n\n'; // Espacios para que corte bien el papel
 
-    ventana.document.write(`
-        <html>
-        <head>
-            <title>Ticket de Pedido</title>
-            <style>
-                body { font-family: monospace; text-align: center; }
-                .ticket {
-                    width: 250px;
-                    margin: auto;
-                }
-                .ticket h2 { margin: 10px 0; }
-                .ticket p { margin: 5px 0; font-size: 14px; }
-                hr { border: 1px dashed #000; margin: 10px 0; }
-            </style>
-        </head>
-        <body onload="window.print(); window.close();">
-            <div class="ticket">
-                <h2>El Comal Digital</h2>
-                <p>${fechaStr} ${horaStr}</p>
-                <hr>
-                <p><strong>${pedido.orden}</strong></p>
-                <p><strong>Q${pedido.quetzales}.00</strong></p>
-                <p>${pedido.tortillas} tortillas</p>
-                <hr>
-                <p>${mensajeFinal}</p>
-                <p>¡Gracias por su compra!</p>
-            </div>
-        </body>
-        </html>
-    `);
-
-    ventana.document.close();
+    // Imprimir el ticket
+    const printWindow = window.open('', '', 'width=300,height=600');
+    printWindow.document.write(`<pre style="font-family: monospace;">${ticket}</pre>`);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
 }
 
 async function crearPedido() {
