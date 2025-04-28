@@ -224,13 +224,13 @@ function mostrarPedidos() {
             : '';
 
         const row = `
-            <tr id="pedido-${pedido.id}" class="${pedido.estado === 'Listo para entrega' ? 'listo' : ''}">
+            <tr id="pedido-${pedido.id}">
                 <td>${pedido.id}</td>
                 <td>${pedido.orden}</td>
                 <td>Q${pedido.quetzales}</td>
                 <td>${pedido.tortillas}</td>
-                <td>${pedido.restantes}</td>
-                <td>${pedido.estado}</td>
+                <td>${pedido.estado}</td> <!-- Correcto: Estado ahora viene de pedido.estado -->
+                <td>${pedido.restante}</td> <!-- Correcto: Número de tortillas restantes -->
                 <td>${botonEntregar}</td>
             </tr>
         `;
