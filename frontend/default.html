@@ -214,7 +214,7 @@ window.addEventListener('DOMContentLoaded', () => {
     cargarPedidosDesdeBackend();
 });
 
-      function mostrarPedidos() {
+function mostrarPedidos() {
     const tbody = document.querySelector("#tablaPedidos tbody");
     tbody.innerHTML = "";
 
@@ -223,6 +223,10 @@ window.addEventListener('DOMContentLoaded', () => {
             ? pedido.entregaEstimada.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             : "-";
 
+        const botonEntregar = pedido.estado === 'Listo para entrega'
+            ? `<button onclick="entregarPedido(${pedido.id})">Entregar</button>`
+            : '';
+
         const row = `
             <tr id="pedido-${pedido.id}" class="${pedido.estado === 'Listo para entrega' ? 'listo' : ''}">
                 <td>${pedido.id}</td>
@@ -230,17 +234,13 @@ window.addEventListener('DOMContentLoaded', () => {
                 <td>Q${pedido.quetzales}</td>
                 <td>${pedido.tortillas}</td>
                 <td>${pedido.estado}</td>
-                <td>${pedido.restante}</td>
-                <td>
-                    <button onclick="entregarPedido(${pedido.id})">Entregar</button>
-                </td>
+                <td>${entregaStr}</td>
+                <td>${botonEntregar}</td>
             </tr>
         `;
 
         tbody.innerHTML += row;
     });
-
-    scrollAProximoListo();
 }
 
 function entregarPedido(id) {
